@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   fice-sc-bot:
-    image: kulunchick/fice-events-bot
+    image: kulunchick/fice-sc-bot
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,8 +10,7 @@ services:
     restart: on-failure
     stop_signal: SIGINT
     depends_on:
-      - redis
-      - postgres
+      - fice-sc-postgres
     environment:
       - TOKEN=${TOKEN}
       - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
@@ -31,7 +30,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-postgres}
-
 
 
 volumes:
