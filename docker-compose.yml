@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  fice-sc-bot:
+    image: kulunchick/fice-events-bot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: bash -c "alembic upgrade heads && python bot/main.py"
+    restart: on-failure
+    stop_signal: SIGINT
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - TOKEN=${TOKEN}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+  fice-sc-postgres:
+    image: postgres:alpine
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+
+
+volumes:
+  redis-data:
+  postgres-data:
