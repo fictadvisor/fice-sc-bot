@@ -5,6 +5,7 @@ from aiogram.filters import (
     LEAVE_TRANSITION,
     ChatMemberUpdatedFilter, Command,
 )
+from aiogram.types import Message
 
 from .all_members import all_members
 from .answer_message import answer_message
@@ -37,6 +38,6 @@ router.callback_query.register(send_to_group, SendMessage.filter())
 
 router.message.register(rename_group, F.new_chat_title)
 
-router.message.register(answer_message, F.reply_to_message)
+router.message.register(answer_message, F.reply_to_message.from_user.is_bot)
 
 router.message.register(messages, ~F.is_bot)
