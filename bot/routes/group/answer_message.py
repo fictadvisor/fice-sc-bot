@@ -17,22 +17,39 @@ async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> N
     if message_in is None:
         return
 
-    message_out = await bot.send_message(
-        chat_id=message_in.forward_from_chat_id,
-        text=await FORWARD_MESSAGE.render_async(
-            title=message.chat.title,
-            username=message.from_user.mention_html(),
-            text=message.html_text
-        ),
-        reply_to_message_id=message_in.forward_from_message_id
-    )
+    messages = []
+    if message_in.text:
+        messages.append(await bot.send_message(
+            chat_id=message_in.forward_from_chat_id,
+            text=await FORWARD_MESSAGE.render_async(
+                title=message.chat.title,
+                username=message.from_user.mention_html(),
+                text=message.html_text
+            ),
+            reply_to_message_id=message_in.forward_from_message_id
+        ))
+    else:
+        messages.append(await bot.send_message(
+            message_in.forward_from_chat_id,
+            await FORWARD_MESSAGE.render_async(
+                title=message.chat.title,
+                username=message.from_user.mention_html(),
+            ),
+            reply_to_message_id=message_in.forward_from_message_id
+        ))
+        messages.append(await bot.copy_message(
+            message_in.forward_from_chat_id,
+            message.chat.id,
+            message.message_id,
+        ))
 
-    message_model = MessageModel(
-        chat_id=message_out.chat.id,
-        message_id=message_out.message_id,
-        from_user_id=message.from_user.id,
-        forward_from_chat_id=message.chat.id,
-        forward_from_message_id=message.message_id
-    )
+    for message_out in messages:
+        message_model = MessageModel(
+            chat_id=message_in.forward_from_chat_id,
+            message_id=message_out.message_id,
+            from_user_id=message.from_user.id,
+            forward_from_chat_id=message.chat.id,
+            forward_from_message_id=message.message_id
+        )
 
-    await message_repository.create(message_model)
+        await message_repository.create(message_model)
