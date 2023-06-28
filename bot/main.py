@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
+from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
@@ -32,6 +33,7 @@ async def main() -> None:
     dp = Dispatcher()
 
     dp.update.middleware(SessionMaker(sessionmaker))
+    dp.callback_query.middleware(CallbackAnswerMiddleware())
 
     dp.include_router(router)
 
