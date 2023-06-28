@@ -10,12 +10,10 @@ from bot.models import Message as MessageModel
 async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> None:
     message_repository = MessageRepository(session)
 
-    print(message)
     message_in = await message_repository.find_one(MessageFilter(
         chat_id=message.chat.id,
         message_id=message.reply_to_message.message_id
     ))
-    print(message_in)
     if message_in is None:
         return
 
