@@ -18,7 +18,7 @@ async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> N
         return
 
     messages = []
-    if message_in.text:
+    if message.text:
         messages.append(await bot.send_message(
             chat_id=message_in.forward_from_chat_id,
             text=await FORWARD_MESSAGE.render_async(
