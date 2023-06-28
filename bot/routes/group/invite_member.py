@@ -22,7 +22,9 @@ async def invite_member(event: ChatMemberUpdated, session: AsyncSession):
     if user is None:
         user = User(
             id=event.new_chat_member.user.id,
-            username=f"@{event.new_chat_member.user.username}" or event.new_chat_member.user.mention_html()
+            username=f"@{event.new_chat_member.user.username}"
+            if event.new_chat_member.user.username
+            else event.new_chat_member.user.mention_html()
         )
         await user_repository.create(user)
 
