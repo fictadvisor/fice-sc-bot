@@ -6,7 +6,6 @@ ALL_MEMBERS = environment.from_string("""
 <code>{% for user in group.users %}
 {{ user.username }}
 {% endfor %}</code>
-
 {% endfor %}
 """)
 
@@ -27,6 +26,6 @@ FORWARD_MESSAGE = environment.from_string("""
 {{ text }}
 """)
 
-SENT = """
-Надіслано
-"""
+SENT = environment.from_string("""
+Надіслано у <b>{{ title }}</b>
+""")

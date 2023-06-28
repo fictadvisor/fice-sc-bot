@@ -42,4 +42,4 @@ async def send_to_group(callback: CallbackQuery, callback_data: SendMessage, bot
 
     await message_repository.create(message_model)
 
-    await callback.message.edit_text(SENT)
+    await callback.message.edit_text(await SENT.render_async(title=message_out.chat.title))

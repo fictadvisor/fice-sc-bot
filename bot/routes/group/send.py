@@ -21,7 +21,7 @@ async def send(message: Message, session: AsyncSession) -> None:
     )
     await message_repository.create(message_model)
 
-    await message.answer(
+    await message.reply(
         text=SELECT_GROUP,
         reply_markup=await get_send_keyboard(
             list(filter(lambda group: group.id != message.chat.id, groups)),
