@@ -2,10 +2,7 @@ version: '3.4'
 
 services:
   fice-sc-bot:
-    image: kulunchick/fice-sc-bot
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: fictadvisor/fice-sc-bot:latest
     command: bash -c "alembic upgrade heads && python bot/main.py"
     restart: on-failure
     stop_signal: SIGINT
@@ -13,7 +10,7 @@ services:
       - fice-sc-postgres
     environment:
       - TOKEN=${TOKEN}
-      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_HOST=${POSTGRES_HOST:-fice-sc-postgres}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
