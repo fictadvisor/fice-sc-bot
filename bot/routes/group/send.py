@@ -23,5 +23,8 @@ async def send(message: Message, session: AsyncSession) -> None:
 
     await message.answer(
         text=SELECT_GROUP,
-        reply_markup=await get_send_keyboard(groups, message.reply_to_message.message_id)
+        reply_markup=await get_send_keyboard(
+            list(filter(lambda group: group.id != message.chat.id, groups)),
+            message.reply_to_message.message_id
+        )
     )
