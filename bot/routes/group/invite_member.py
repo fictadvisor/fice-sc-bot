@@ -24,7 +24,7 @@ async def invite_member(event: ChatMemberUpdated, session: AsyncSession):
             id=event.new_chat_member.user.id,
             username=f"@{event.new_chat_member.user.username}"
             if event.new_chat_member.user.username
-            else event.new_chat_member.user.mention_html()
+            else event.new_chat_member.user.full_name
         )
         await user_repository.create(user)
 

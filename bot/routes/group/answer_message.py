@@ -3,8 +3,8 @@ from aiogram.types import Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.messages.group import FORWARD_MESSAGE
-from bot.repositories.message import MessageRepository, MessageFilter
 from bot.models import Message as MessageModel
+from bot.repositories.message import MessageRepository, MessageFilter
 
 
 async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> None:

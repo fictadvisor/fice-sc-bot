@@ -24,12 +24,12 @@ async def messages(message: Message, session: AsyncSession):
             id=message.from_user.id,
             username=f"@{message.from_user.username}"
             if message.from_user.username
-            else message.from_user.mention_html()
+            else message.from_user.full_name
         )
         await user_repository.create(user)
     elif user.username != message.from_user.username:
         user.username = f"@{message.from_user.username}" \
             if message.from_user.username \
-            else message.from_user.mention_html()
+            else message.from_user.full_name
 
     group.users.append(user)

@@ -1,7 +1,7 @@
 from aiogram.types import ChatMemberUpdated
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.repositories.group import GroupRepository, GroupFilter
+from bot.repositories.group import GroupRepository
 
 
 async def kick_bot(event: ChatMemberUpdated, session: AsyncSession):

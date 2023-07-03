@@ -1,6 +1,13 @@
 from bot.messages.environment import environment
 
 ALL_MEMBERS = environment.from_string("""
+Всі учасники:
+<code>{% for user in users %}
+{{ user.username }}
+{% endfor %}</code>
+""")
+
+GROUPS_MEMBERS = environment.from_string("""
 {% for group in groups %}
 <b>{{ group.title }}</b>
 <code>{% for user in group.users %}

@@ -3,9 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.keyboards.inline.send_keyboard import get_send_keyboard
 from bot.messages.group import SELECT_GROUP
+from bot.models import Message as MessageModel
 from bot.repositories.group import GroupRepository
 from bot.repositories.message import MessageRepository
-from bot.models import Message as MessageModel
 
 
 async def send(message: Message, session: AsyncSession) -> None:
