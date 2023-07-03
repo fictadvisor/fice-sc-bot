@@ -1,3 +1,5 @@
+from asyncio import sleep
+
 from aiogram import Bot
 from aiogram.types import CallbackQuery
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,13 +40,16 @@ async def send_to_group(callback: CallbackQuery, callback_data: SendMessage, bot
             callback_data.chat_id,
             await FORWARD_MESSAGE.render_async(
                 title=callback.message.chat.title,
-                username=user.user.mention_html(),
+                username=f"@{user.user.username}"
+                if user.user.username
+                else user.user.full_name,
             )
         ))
+        await sleep(0.1)
         messages.append(await bot.copy_message(
-            callback_data.chat_id,
-            callback.message.chat.id,
-            callback_data.message_id
+            chat_id=callback_data.chat_id,
+            from_chat_id=callback.message.chat.id,
+            message_id=callback_data.message_id,
         ))
 
     for message_out in messages:

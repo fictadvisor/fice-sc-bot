@@ -1,3 +1,6 @@
+from asyncio import sleep
+from typing import List
+
 from aiogram import Bot
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,7 +26,9 @@ async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> N
             chat_id=message_in.forward_from_chat_id,
             text=await FORWARD_MESSAGE.render_async(
                 title=message.chat.title,
-                username=message.from_user.mention_html(),
+                username=f"@{message.from_user.username}"
+                if message.from_user.username
+                else message.from_user.full_name,
                 text=message.html_text
             ),
             reply_to_message_id=message_in.forward_from_message_id
@@ -33,14 +38,18 @@ async def answer_message(message: Message, bot: Bot, session: AsyncSession) -> N
             message_in.forward_from_chat_id,
             await FORWARD_MESSAGE.render_async(
                 title=message.chat.title,
-                username=message.from_user.mention_html(),
+                username=f"@{message.from_user.username}"
+                if message.from_user.username
+                else message.from_user.full_name,
             ),
             reply_to_message_id=message_in.forward_from_message_id
         ))
+        await sleep(0.1)
         messages.append(await bot.copy_message(
-            message_in.forward_from_chat_id,
-            message.chat.id,
-            message.message_id,
+            chat_id=message_in.forward_from_chat_id,
+            from_chat_id=message.chat.id,
+            message_id=message.message_id,
+            reply_to_message_id=message_in.forward_from_message_id
         ))
 
     for message_out in messages:
