@@ -12,14 +12,15 @@ async def send(message: Message, session: AsyncSession) -> None:
     group_repository = GroupRepository(session)
     groups = await group_repository.get()
 
-    message_repository = MessageRepository(session)
-    message_model = MessageModel(
-        chat_id=message.chat.id,
-        message_id=message.reply_to_message.message_id,
-        from_user_id=message.reply_to_message.from_user.id,
-        text=message.reply_to_message.html_text
-    )
-    await message_repository.create(message_model)
+    if not message.reply_to_message.media_group_id:
+        message_repository = MessageRepository(session)
+        message_model = MessageModel(
+            chat_id=message.chat.id,
+            message_id=message.reply_to_message.message_id,
+            from_user_id=message.reply_to_message.from_user.id,
+            text=message.reply_to_message.html_text
+        )
+        await message_repository.create(message_model)
 
     await message.reply(
         text=SELECT_GROUP,

@@ -11,6 +11,7 @@ from bot.repositories.base import BaseRepository
 class MessageFilter(BaseModel):
     chat_id: Optional[int] = None
     message_id: Optional[int] = None
+    media_group_id: Optional[str] = None
     forward_from_chat_id: Optional[int] = None
     forward_from_message_id: Optional[int] = None
 
@@ -31,6 +32,8 @@ class MessageRepository(BaseRepository[Message]):
             query = query.filter_by(chat_id=message_filter.chat_id)
         if message_filter.message_id is not None:
             query = query.filter_by(message_id=message_filter.message_id)
+        if message_filter.media_group_id is not None:
+            query = query.filter_by(media_group_id=message_filter.media_group_id)
         if message_filter.forward_from_chat_id is not None:
             query = query.filter_by(forward_from_chat_id=message_filter.forward_from_chat_id)
         if message_filter.forward_from_message_id is not None:

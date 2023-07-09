@@ -8,6 +8,7 @@ from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.commands import set_commands
+from bot.middlewares.album import AlbumMiddleware
 from bot.middlewares.sessionmaker import SessionMaker
 from bot.routes import router
 from bot.settings import settings
@@ -36,6 +37,7 @@ async def main() -> None:
     await set_commands(bot)
 
     dp.update.middleware(SessionMaker(sessionmaker))
+    dp.message.middleware(AlbumMiddleware())
     dp.callback_query.middleware(CallbackAnswerMiddleware())
 
     dp.include_router(router)

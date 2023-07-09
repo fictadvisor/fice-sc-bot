@@ -14,6 +14,7 @@ from .invite_bot import invite_bot
 from .invite_member import invite_member
 from .kick_bot import kick_bot
 from .kick_member import kick_member
+from .media_group import media_group
 from .messages import messages
 from .rename_group import rename_group
 from .send import send
@@ -40,5 +41,7 @@ router.callback_query.register(send_to_group, SendMessage.filter())
 router.message.register(rename_group, F.new_chat_title)
 
 router.message.register(answer_message, F.reply_to_message.from_user.is_bot)
+
+router.message.register(media_group, F.media_group_id)
 
 router.message.register(messages, ~F.is_bot)

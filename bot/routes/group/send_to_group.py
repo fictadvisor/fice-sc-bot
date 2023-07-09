@@ -8,6 +8,7 @@ from bot.keyboards.inline.types.send_message import SendMessage
 from bot.messages.group import FORWARD_MESSAGE, SENT
 from bot.models.message import Message
 from bot.repositories.message import MessageRepository, MessageFilter
+from bot.types import INPUT_TYPES
 
 
 async def send_to_group(callback: CallbackQuery, callback_data: SendMessage, bot: Bot, session: AsyncSession) -> None:
@@ -26,7 +27,35 @@ async def send_to_group(callback: CallbackQuery, callback_data: SendMessage, bot
     )
 
     messages = []
-    if message_in.text:
+    if message_in.media_group_id:
+        messages.append(await bot.send_message(
+            callback_data.chat_id,
+            await FORWARD_MESSAGE.render_async(
+                title=callback.message.chat.title,
+                username=f"@{user.user.username}"
+                if user.user.username
+                else user.user.full_name,
+            )
+        ))
+
+        await sleep(0.1)
+
+        media_group = await message_repository.find(MessageFilter(
+            chat_id=callback.message.chat.id,
+            media_group_id=message_in.media_group_id
+        ))
+        messages.extend(await bot.send_media_group(
+            chat_id=callback_data.chat_id,
+            media=[
+                INPUT_TYPES[media.media_type](
+                    type=media.media_type,
+                    media=media.file_id,
+                    caption=media.text
+                )
+                for media in media_group
+            ]
+        ))
+    elif message_in.text:
         messages.append(await bot.send_message(
             callback_data.chat_id,
             await FORWARD_MESSAGE.render_async(
