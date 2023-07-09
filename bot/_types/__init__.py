@@ -1,4 +1,4 @@
-from .album import Album, Media, InputMedia, INPUT_TYPES, MediaTypes
+from bot._types.album import Album, Media, InputMedia, INPUT_TYPES, MediaTypes
 
 __all__ = [
     "Album",

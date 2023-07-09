@@ -1,5 +1,5 @@
 from asyncio import sleep
-from typing import List, Optional
+from typing import Optional
 
 from aiogram import Bot
 from aiogram.types import Message
@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.messages.group import FORWARD_MESSAGE
 from bot.models import Message as MessageModel
 from bot.repositories.message import MessageRepository, MessageFilter
-from bot.types import Album
+from bot._types import Album
 
 
 async def answer_message(message: Message, bot: Bot, session: AsyncSession, album: Optional[Album] = None) -> None:

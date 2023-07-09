@@ -1,9 +1,9 @@
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.repositories.message import MessageRepository
-from bot.types import Album
 from bot.models import Message as MessageModel
+from bot.repositories.message import MessageRepository
+from bot._types import Album
 from bot.utils.get_content import get_content
 
 

@@ -8,7 +8,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message, TelegramObject
 from cachetools import TTLCache
 
-from bot.types import Album, Media
+from bot._types import Album, Media
 from bot.utils.get_content import get_content
 
 

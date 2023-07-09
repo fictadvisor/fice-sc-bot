@@ -8,7 +8,7 @@ from bot.keyboards.inline.types.send_message import SendMessage
 from bot.messages.group import FORWARD_MESSAGE, SENT
 from bot.models.message import Message
 from bot.repositories.message import MessageRepository, MessageFilter
-from bot.types import INPUT_TYPES
+from bot._types import INPUT_TYPES
 
 
 async def send_to_group(callback: CallbackQuery, callback_data: SendMessage, bot: Bot, session: AsyncSession) -> None:

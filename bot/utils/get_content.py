@@ -2,7 +2,7 @@ from typing import Optional, Tuple
 
 from aiogram.types import Message
 
-from bot.types import Media, MediaTypes
+from bot._types import Media, MediaTypes
 
 
 def get_content(message: Message) -> Optional[Tuple[Media, MediaTypes]]:

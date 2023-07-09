@@ -4,7 +4,7 @@ from sqlalchemy import BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 from bot.models import Base
-from bot.types import MediaTypes
+from bot._types import MediaTypes
 
 
 class Message(Base):
