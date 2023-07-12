@@ -3,7 +3,7 @@ from aiogram.enums.chat_type import ChatType
 from aiogram.filters import (
     JOIN_TRANSITION,
     LEAVE_TRANSITION,
-    ChatMemberUpdatedFilter, Command,
+    ChatMemberUpdatedFilter, Command, MagicData,
 )
 
 from .all_members import all_members
@@ -17,8 +17,10 @@ from .kick_member import kick_member
 from .media_group import media_group
 from .messages import messages
 from .rename_group import rename_group
+from .reply_message import reply_message
 from .send import send
 from .send_to_group import send_to_group
+from ...filters.is_sent import IsSent
 from ...keyboards.inline.types.send_message import SendMessage
 
 router = Router()
@@ -40,7 +42,9 @@ router.callback_query.register(send_to_group, SendMessage.filter())
 
 router.message.register(rename_group, F.new_chat_title)
 
-router.message.register(answer_message, F.reply_to_message.from_user.is_bot)
+router.message.register(answer_message, MagicData(F.event.reply_to_message.from_user.id == F.bot.id))
+
+router.message.register(reply_message, MagicData(F.event.reply_to_message.from_user.id != F.bot.id), IsSent())
 
 router.message.register(media_group, F.media_group_id)
 
