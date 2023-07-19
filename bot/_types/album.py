@@ -1,5 +1,6 @@
+from collections import defaultdict
 from enum import Enum
-from typing import List, Optional, Dict, Type, Union
+from typing import List, Optional, Dict, Type, Union, cast, Tuple
 
 from aiogram.types import (
     PhotoSize, Video, Audio,
@@ -58,3 +59,26 @@ class Album(BaseModel):
             group[0].caption = self.caption
 
         return group
+
+    @classmethod
+    def create_from_messages(cls, messages: List[Message]) -> "Album":
+        data = defaultdict(list)
+        data["messages"] = messages
+        for message in messages:
+            media, content_type = cast(Tuple[Media, str], cls.get_content(message))
+            data[content_type].append(media)
+            if message.html_text is not None:
+                data["caption"] = message.html_text
+        return Album(**data)
+
+    @staticmethod
+    def get_content(message: Message) -> Optional[Tuple["Media", "MediaTypes"]]:
+        if message.photo:
+            return message.photo[-1], MediaTypes.PHOTO
+        if message.video:
+            return message.video, MediaTypes.VIDEO
+        if message.audio:
+            return message.audio, MediaTypes.AUDIO
+        if message.document:
+            return message.document, MediaTypes.DOCUMENT
+        return None

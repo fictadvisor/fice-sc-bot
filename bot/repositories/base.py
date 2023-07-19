@@ -1,6 +1,7 @@
 from typing import Generic, TypeVar, Sequence, Optional, Type, Any
 
-from sqlalchemy import select, update, delete, func, ColumnElement
+from pydantic import BaseModel
+from sqlalchemy import select, update, delete, func, ColumnElement, Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.base import ExecutableOption
 
@@ -32,14 +33,7 @@ class BaseRepository(Generic[T]):
     ) -> Sequence[T]:
         query = select(self.__model__)
 
-        if limit is not None:
-            query = query.limit(limit)
-        if offset is not None:
-            query = query.offset(offset)
-        if options is not None:
-            query = query.options(*options)
-        if order is not None:
-            query = query.order_by(*order)
+        query = self._set_filter(query, None, limit, offset, options, order)
 
         return (await self._session.scalars(query)).all()
 
@@ -60,3 +54,24 @@ class BaseRepository(Generic[T]):
     async def delete(self, model_id: int) -> None:
         query = delete(self.__model__).where(self.__model__.id == model_id)
         await self._session.execute(query)
+
+    @staticmethod
+    def _set_filter(
+            query: Select,
+            model_filter: Optional[BaseModel] = None,
+            limit: Optional[int] = None,
+            offset: Optional[int] = None,
+            options: Optional[Sequence[ExecutableOption]] = None,
+            order: Optional[Sequence[ColumnElement]] = None
+    ) -> Select:
+        if model_filter is not None:
+            query = query.filter_by(**model_filter.dict(exclude_none=True))
+        if limit is not None:
+            query = query.limit(limit)
+        if offset is not None:
+            query = query.offset(offset)
+        if options is not None:
+            query = query.options(*options)
+        if order is not None:
+            query = query.order_by(*order)
+        return query

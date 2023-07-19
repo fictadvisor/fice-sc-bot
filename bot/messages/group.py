@@ -28,9 +28,9 @@ SELECT_GROUP = """
 """
 
 FORWARD_MESSAGE = environment.from_string("""
-Переслано з <b>{{ title }}</b> від <code>{{ username }}</code>:
+{{ html_text|default('', true) }}
 
-{{ text }}
+<b>{{ title }}</b>, <code>{{ username }}</code>
 """)
 
 SENT = environment.from_string("""

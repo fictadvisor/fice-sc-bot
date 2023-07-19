@@ -1,24 +1,20 @@
 from aiogram.types import ChatMemberUpdated
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from bot.models import Group, User
-from bot.repositories.group import GroupRepository
-from bot.repositories.user import UserRepository
+from bot.repositories.uow import UnitOfWork
 
 
-async def invite_member(event: ChatMemberUpdated, session: AsyncSession):
-    group_repository = GroupRepository(session)
-    group = await group_repository.get_by_id(event.chat.id, [selectinload(Group.users)])
+async def invite_member(event: ChatMemberUpdated, uow: UnitOfWork):
+    group = await uow.groups.get_by_id(event.chat.id, [selectinload(Group.users)])
     if group is None:
         group = Group(
             id=event.chat.id,
             title=event.chat.title
         )
-        await group_repository.create(group)
+        await uow.groups.create(group)
 
-    user_repository = UserRepository(session)
-    user = await user_repository.get_by_id(event.new_chat_member.user.id, [selectinload(User.groups)])
+    user = await uow.groups.get_by_id(event.new_chat_member.user.id, [selectinload(User.groups)])
     if user is None:
         user = User(
             id=event.new_chat_member.user.id,
@@ -26,6 +22,6 @@ async def invite_member(event: ChatMemberUpdated, session: AsyncSession):
             if event.new_chat_member.user.username
             else event.new_chat_member.user.full_name
         )
-        await user_repository.create(user)
+        await uow.groups.create(user)
 
     group.users.append(user)

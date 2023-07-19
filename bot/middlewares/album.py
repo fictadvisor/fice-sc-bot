@@ -1,15 +1,14 @@
 from asyncio import sleep
 from typing import (
     Any, Callable, Awaitable, MutableMapping,
-    Tuple, Dict, cast
+    Dict, List
 )
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message, TelegramObject
 from cachetools import TTLCache
 
-from bot._types import Album, Media
-from bot.utils.get_content import get_content
+from bot._types import Album
 
 
 class AlbumMiddleware(BaseMiddleware):
@@ -22,7 +21,7 @@ class AlbumMiddleware(BaseMiddleware):
             ttl: float = DEFAULT_TTL
     ) -> None:
         self.latency = latency
-        self.cache: MutableMapping[str, Dict[str, Any]] = TTLCache(maxsize=10_000, ttl=ttl)
+        self.cache: MutableMapping[str, List[Any]] = TTLCache(maxsize=10_000, ttl=ttl)
 
     async def __call__(
             self,
@@ -32,24 +31,14 @@ class AlbumMiddleware(BaseMiddleware):
     ) -> Any:
         if isinstance(event, Message) and event.media_group_id is not None:
             key = event.media_group_id
-            media, content_type = cast(Tuple[Media, str], get_content(event))
 
             if key in self.cache:
-                if content_type not in self.cache[key]:
-                    self.cache[key][content_type] = [media]
-                    return None
+                self.cache[key].append(event)
+                return
 
-                self.cache[key]["messages"].append(event)
-                self.cache[key][content_type].append(media)
-                return None
-
-            self.cache[key] = {
-                content_type: [media],
-                "messages": [event],
-                "caption": event.html_text
-            }
+            self.cache[key] = [event]
 
             await sleep(self.latency)
-            data["album"] = Album(**self.cache[key])
+            data["album"] = Album.create_from_messages(self.cache[key])
 
         return await handler(event, data)

@@ -1,11 +1,9 @@
 from aiogram.types import ChatMemberUpdated
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.repositories.group import GroupRepository
+from bot.repositories.uow import UnitOfWork
 
 
-async def kick_bot(event: ChatMemberUpdated, session: AsyncSession):
-    group_repository = GroupRepository(session)
-    group = await group_repository.get_by_id(event.chat.id)
+async def kick_bot(event: ChatMemberUpdated, uow: UnitOfWork):
+    group = await uow.groups.get_by_id(event.chat.id)
     if group is not None:
-        await group_repository.delete(group.id)
+        await uow.groups.delete(group.id)
