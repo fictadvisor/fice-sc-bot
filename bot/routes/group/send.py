@@ -7,6 +7,7 @@ from bot.repositories.uow import UnitOfWork
 
 
 async def send(message: Message, uow: UnitOfWork) -> None:
+    await message.delete()
     groups = await uow.groups.get()
 
     if not message.reply_to_message.media_group_id:
