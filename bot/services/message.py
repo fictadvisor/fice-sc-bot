@@ -90,7 +90,7 @@ class MessageService:
 
     async def _send_media_group(self, chat_id: int, chat_title: str, username: str, media_group: List[InputMedia],
                                 reply_to_message_id: Optional[int] = None, thread_id: Optional[int] = None) -> None:
-        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id)
+        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id, thread_id)
         await sleep(0.1)
         self.messages.extend(await self.bot.send_media_group(
             chat_id,
