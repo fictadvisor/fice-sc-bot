@@ -23,8 +23,16 @@ GROUP_MEMBERS = environment.from_string("""
 {% endfor %}</code>
 """)
 
+SELECT_TYPE = """
+Оберіть тип:
+"""
+
 SELECT_GROUP = """
 Оберіть групу:
+"""
+
+SELECT_TOPIC = """
+Оберіть гілку
 """
 
 FORWARD_MESSAGE = environment.from_string("""

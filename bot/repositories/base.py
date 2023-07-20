@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar, Sequence, Optional, Type, Any
 
 from pydantic import BaseModel
-from sqlalchemy import select, update, delete, func, ColumnElement, Select
+from sqlalchemy import select, update, delete, func, ColumnElement, Select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.base import ExecutableOption
 
@@ -75,3 +75,10 @@ class BaseRepository(Generic[T]):
         if order is not None:
             query = query.order_by(*order)
         return query
+
+    async def check_exists(self, model_filter: BaseModel) -> bool:
+        query = exists(self.__model__.id).select()
+
+        query = self._set_filter(query, model_filter, 1)
+
+        return await self._session.scalar(query)

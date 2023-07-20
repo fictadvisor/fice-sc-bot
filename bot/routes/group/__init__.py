@@ -3,7 +3,7 @@ from aiogram.enums.chat_type import ChatType
 from aiogram.filters import (
     JOIN_TRANSITION,
     LEAVE_TRANSITION,
-    ChatMemberUpdatedFilter, Command, MagicData,
+    ChatMemberUpdatedFilter, Command, MagicData, ExceptionMessageFilter,
 )
 
 from .all_members import all_members
@@ -18,12 +18,20 @@ from .media_group import media_group
 from .messages import messages
 from .rename_group import rename_group
 from .reply_message import reply_message
+from .select_group import select_group
+from .select_topic import select_topic
+from .select_type import select_type
 from .send import send
-from .send_to_group import send_to_group
+from .topic_not_found import topic_not_found
+from .topics import router as topics_router
 from ...filters.is_sent import IsSent
-from ...keyboards.inline.types.send_message import SendMessage
+from ...keyboards.inline.types.select_group import SelectGroup
+from ...keyboards.inline.types.select_topic import SelectTopic
+from ...keyboards.inline.types.select_type import SelectType
 
 router = Router()
+
+router.include_router(topics_router)
 
 router.message.filter(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 
@@ -38,7 +46,9 @@ router.message.register(groups_members, Command("groups"))
 router.message.register(group_members, Command("users"))
 router.message.register(send, Command("send"), F.reply_to_message)
 
-router.callback_query.register(send_to_group, SendMessage.filter())
+router.callback_query.register(select_type, SelectType.filter())
+router.callback_query.register(select_group, SelectGroup.filter())
+router.callback_query.register(select_topic, SelectTopic.filter())
 
 router.message.register(rename_group, F.new_chat_title)
 
@@ -49,3 +59,6 @@ router.message.register(reply_message, MagicData(F.event.reply_to_message.from_u
 router.message.register(media_group, F.media_group_id)
 
 router.message.register(messages, ~F.is_bot)
+
+router.errors.register(topic_not_found,
+                       ExceptionMessageFilter("Telegram server says Bad Request: message thread not found"))

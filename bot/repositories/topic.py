@@ -4,44 +4,42 @@ from pydantic import BaseModel
 from sqlalchemy import select, ColumnElement
 from sqlalchemy.sql.base import ExecutableOption
 
-from bot.models.message import Message
+from bot.models import Topic
 from bot.repositories.base import BaseRepository
 
 
-class MessageFilter(BaseModel):
-    chat_id: Optional[int] = None
-    message_id: Optional[int] = None
-    media_group_id: Optional[str] = None
-    forward_from_chat_id: Optional[int] = None
-    forward_from_message_id: Optional[int] = None
+class TopicFilter(BaseModel):
+    group_id: Optional[int] = None
+    thread_id: Optional[int] = None
+    title: Optional[str] = None
 
 
-class MessageRepository(BaseRepository[Message]):
-    __model__ = Message
+class TopicRepository(BaseRepository[Topic]):
+    __model__ = Topic
 
     async def find(
             self,
-            message_filter: MessageFilter,
+            topic_filter: TopicFilter,
             limit: Optional[int] = None,
             offset: Optional[int] = None,
             options: Optional[Sequence[ExecutableOption]] = None,
             order: Optional[Sequence[ColumnElement]] = None
-    ) -> Sequence[Message]:
+    ) -> Sequence[Topic]:
         query = select(self.__model__)
 
-        query = self._set_filter(query, message_filter, limit, offset, options, order)
+        query = self._set_filter(query, topic_filter, limit, offset, options, order)
 
         return (await self._session.scalars(query)).all()
 
     async def find_one(
             self,
-            message_filter: MessageFilter,
+            topic_filter: TopicFilter,
             offset: Optional[int] = None,
             options: Optional[Sequence[ExecutableOption]] = None,
             order: Optional[Sequence[ColumnElement]] = None
-    ) -> Optional[Message]:
+    ) -> Optional[Topic]:
         query = select(self.__model__).limit(1)
 
-        query = self._set_filter(query, message_filter, 1, offset, options, order)
+        query = self._set_filter(query, topic_filter, 1, offset, options, order)
 
-        return (await self._session.execute(query)).scalar()
+        return (await self._session.scalars(query)).first()

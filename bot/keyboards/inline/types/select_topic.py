@@ -1,6 +1,6 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class SendMessage(CallbackData, prefix="send_chat"):
+class SelectTopic(CallbackData, prefix="topic"):
     chat_id: int
-    message_id: int
+    thread_id: int

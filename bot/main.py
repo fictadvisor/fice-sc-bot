@@ -37,7 +37,9 @@ async def main() -> None:
     await set_commands(bot)
 
     dp.update.middleware(SessionMaker(sessionmaker))
+    dp.errors.middleware(SessionMaker(sessionmaker))
     dp.message.middleware(AlbumMiddleware())
+
     dp.callback_query.middleware(CallbackAnswerMiddleware())
 
     dp.include_router(router)
