@@ -36,6 +36,10 @@ SELECT_TOPIC = """
 """
 
 FORWARD_MESSAGE = environment.from_string("""
+{% if status %}
+Статус: {{ status.value }}
+{% endif %}
+
 {{ html_text|default('', true) }}
 
 <b>{{ title }}</b>, <code>{{ username }}</code>
@@ -43,4 +47,8 @@ FORWARD_MESSAGE = environment.from_string("""
 
 SENT = environment.from_string("""
 Надіслано у <b>{{ title }}</b>
+
+{% if status %}
+Статус: {{ status.value }}
+{% endif %}
 """)
