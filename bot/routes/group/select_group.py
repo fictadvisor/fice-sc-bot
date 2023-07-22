@@ -14,12 +14,11 @@ async def select_group(callback: CallbackQuery, callback_data: SelectGroup, bot:
         message_service = MessageService(bot, uow)
         await message_service.send_to_group(
             callback_data.chat_id,
-            callback.message.chat.title,
-            callback.message.reply_to_message.message_id,
-            callback.message.chat.id
+            callback.message
         )
 
-        await callback.message.edit_text(await SENT.render_async(title=message_service.get_chat_title()))
+        await callback.message.edit_text(
+            await SENT.render_async(title=message_service.get_chat_title(), status=message_service.get_status()))
         return
 
     topics = await uow.topics.find(TopicFilter(group_id=callback_data.chat_id))

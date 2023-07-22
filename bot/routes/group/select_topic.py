@@ -11,10 +11,8 @@ async def select_topic(callback: CallbackQuery, callback_data: SelectTopic, bot:
     message_service = MessageService(bot, uow)
     await message_service.send_to_group(
         callback_data.chat_id,
-        callback.message.chat.title,
-        callback.message.reply_to_message.message_id,
-        callback.message.chat.id,
+        callback.message,
         callback_data.thread_id
     )
 
-    await callback.message.edit_text(await SENT.render_async(title=message_service.get_chat_title()))
+    await callback.message.edit_text(await SENT.render_async(title=message_service.get_chat_title(), status=message_service.get_status()))

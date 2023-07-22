@@ -24,6 +24,7 @@ from .select_type import select_type
 from .send import send
 from .topic_not_found import topic_not_found
 from .topics import router as topics_router
+from .status import router as status_router
 from ...filters.is_sent import IsSent
 from ...keyboards.inline.types.select_group import SelectGroup
 from ...keyboards.inline.types.select_topic import SelectTopic
@@ -32,6 +33,7 @@ from ...keyboards.inline.types.select_type import SelectType
 router = Router()
 
 router.include_router(topics_router)
+router.include_router(status_router)
 
 router.message.filter(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 
