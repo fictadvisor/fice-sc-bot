@@ -59,3 +59,13 @@ SENT = environment.from_string("""
 SET_RESPONSIBLE = """
 Відповідального встановлено
 """
+
+HELP = """
+/all - Усі учасники
+/groups - Учасники груп
+/users - Учасники чату
+/send - Надіслати повідомлення
+/responsible @{username} - Встановити відповідального
+/delete @{username} - Видалити юзера
+/help - Допомога
+"""

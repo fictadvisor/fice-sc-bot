@@ -8,14 +8,16 @@ from aiogram.filters import (
 
 from .all_members import all_members
 from .answer_message import answer_message
+from .errors import errors
 from .group_members import group_members
 from .groups_members import groups_members
+from .help_command import help_command
 from .invite_bot import invite_bot
 from .invite_member import invite_member
 from .kick_bot import kick_bot
 from .kick_member import kick_member
 from .media_group import media_group
-from .messages import messages
+from bot.routes.group.all.messages import messages
 from .rename_group import rename_group
 from .reply_message import reply_message
 from .responsible import responsible
@@ -26,6 +28,8 @@ from .send import send
 from .topic_not_found import topic_not_found
 from .topics import router as topics_router
 from .status import router as status_router
+from .admin import router as admin_router
+from .all import router as all_router
 from ...filters.is_sent import IsSent
 from ...keyboards.inline.types.select_group import SelectGroup
 from ...keyboards.inline.types.select_topic import SelectTopic
@@ -33,8 +37,10 @@ from ...keyboards.inline.types.select_type import SelectType
 
 router = Router()
 
+router.include_router(admin_router)
 router.include_router(topics_router)
 router.include_router(status_router)
+router.include_router(all_router)
 
 router.message.filter(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 
@@ -49,6 +55,7 @@ router.message.register(groups_members, Command("groups"))
 router.message.register(group_members, Command("users"))
 router.message.register(send, Command("send"), F.reply_to_message)
 router.message.register(responsible, Command("responsible", magic=F.args), F.chat.is_forum)
+router.message.register(help_command, Command("help"))
 
 router.callback_query.register(select_type, SelectType.filter())
 router.callback_query.register(select_group, SelectGroup.filter())
@@ -62,7 +69,7 @@ router.message.register(reply_message, MagicData(F.event.reply_to_message.from_u
 
 router.message.register(media_group, F.media_group_id)
 
-router.message.register(messages, ~F.is_bot)
-
 router.errors.register(topic_not_found,
                        ExceptionMessageFilter("Telegram server says Bad Request: message thread not found"))
+
+router.errors.register(errors)

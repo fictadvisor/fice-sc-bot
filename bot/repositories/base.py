@@ -55,6 +55,13 @@ class BaseRepository(Generic[T]):
         query = delete(self.__model__).where(self.__model__.id == model_id)
         await self._session.execute(query)
 
+    async def delete_by_filter(self, model_filter: BaseModel):
+        query = delete(self.__model__)
+
+        query = self._set_filter(query, model_filter)
+
+        return await self._session.scalar(query)
+
     @staticmethod
     def _set_filter(
             query: Select,
