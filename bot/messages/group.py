@@ -39,6 +39,9 @@ FORWARD_MESSAGE = environment.from_string("""
 {% if status %}
 Статус: {{ status.value }}
 {% endif %}
+{% if responsible %}
+Відповідальний: {{ responsible.username }}
+{% endif %}
 
 {{ html_text|default('', true) }}
 
@@ -52,3 +55,7 @@ SENT = environment.from_string("""
 Статус: {{ status.value }}
 {% endif %}
 """)
+
+SET_RESPONSIBLE = """
+Відповідального встановлено
+"""

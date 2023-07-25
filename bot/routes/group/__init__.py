@@ -18,6 +18,7 @@ from .media_group import media_group
 from .messages import messages
 from .rename_group import rename_group
 from .reply_message import reply_message
+from .responsible import responsible
 from .select_group import select_group
 from .select_topic import select_topic
 from .select_type import select_type
@@ -47,6 +48,7 @@ router.message.register(all_members, Command("all"))
 router.message.register(groups_members, Command("groups"))
 router.message.register(group_members, Command("users"))
 router.message.register(send, Command("send"), F.reply_to_message)
+router.message.register(responsible, Command("responsible", magic=F.args), F.chat.is_forum)
 
 router.callback_query.register(select_type, SelectType.filter())
 router.callback_query.register(select_group, SelectGroup.filter())

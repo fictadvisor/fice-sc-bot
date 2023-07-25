@@ -14,6 +14,7 @@ class Message(Base):
 
     chat_id: Mapped[int] = mapped_column(BigInteger)
     message_id: Mapped[int] = mapped_column(BigInteger)
+    message_thread_id: Mapped[Optional[int]] = mapped_column(BigInteger)
     media_group_id: Mapped[Optional[str]]
     file_id: Mapped[Optional[str]]
     media_type: Mapped[Optional[MediaTypes]]

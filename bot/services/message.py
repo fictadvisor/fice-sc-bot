@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from aiogram import Bot
 from aiogram.types import Message, InputMedia, User, InlineKeyboardMarkup, Chat
+from sqlalchemy.orm import selectinload
 
 from bot._types import INPUT_TYPES, Album
 from bot._types.message_types import MessageTypes
@@ -10,8 +11,9 @@ from bot._types.status import Status
 from bot.keyboards.inline.change_status_keyboard import get_change_status_keyboard
 from bot.keyboards.inline.types.select_status import SelectStatus
 from bot.messages.group import FORWARD_MESSAGE, SENT
-from bot.models import Message as MessageModel
+from bot.models import Message as MessageModel, User as UserModel, Topic
 from bot.repositories.message import MessageFilter
+from bot.repositories.topic import TopicFilter
 from bot.repositories.uow import UnitOfWork
 
 
@@ -56,6 +58,10 @@ class MessageService:
             chat_id=from_message.chat.id,
             message_id=from_message.message_id,
         ), order=[MessageModel.id.desc()])
+        topic = await self.uow.topics.find_one(TopicFilter(
+            group_id=chat_id,
+            thread_id=thread_id
+        ), options=[selectinload(Topic.responsible)])
 
         if message_in is None:
             return
@@ -64,6 +70,7 @@ class MessageService:
         username = self._get_username_from_user(user)
         title = from_message.chat.title
         from_chat_id = from_message.chat.id
+        responsible = topic.responsible if topic else None
 
         pin_message = True if message_in.type == MessageTypes.TASK else False
         reply_markup = await get_change_status_keyboard(from_chat_id, message.message_id) if message_in.type == MessageTypes.TASK else None
@@ -77,13 +84,13 @@ class MessageService:
 
             media_group = self._get_media_group_from_message_models(messages)
             await self._send_media_group(chat_id, title, username, media_group, None, thread_id, reply_markup,
-                                         message_in.status)
+                                         message_in.status, responsible)
         elif message_in.html_text:
             await self._send_text(chat_id, title, username, message_in.html_text, None, thread_id, reply_markup,
-                                  message_in.status)
+                                  message_in.status, responsible)
         else:
             await self._copy_message(chat_id, title, username, from_chat_id, message_in.message_id, None, thread_id,
-                                     reply_markup, message_in.status)
+                                     reply_markup, message_in.status, responsible)
 
         if pin_message:
             await self.messages[0].pin()
@@ -127,8 +134,8 @@ class MessageService:
     async def _send_media_group(self, chat_id: int, chat_title: str, username: str, media_group: List[InputMedia],
                                 reply_to_message_id: Optional[int] = None, thread_id: Optional[int] = None,
                                 reply_markup: Optional[InlineKeyboardMarkup] = None,
-                                status: Optional[Status] = None) -> None:
-        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id, thread_id, reply_markup, status)
+                                status: Optional[Status] = None, responsible: Optional[UserModel] = None) -> None:
+        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id, thread_id, reply_markup, status, responsible)
         await sleep(0.1)
         self.messages.extend(await self.bot.send_media_group(
             chat_id,
@@ -139,14 +146,15 @@ class MessageService:
 
     async def _send_text(self, chat_id: int, chat_title: str, username: str, html_text: Optional[str] = None,
                          reply_to_message_id: Optional[int] = None, thread_id: Optional[int] = None,
-                         reply_markup: Optional[InlineKeyboardMarkup] = None, status: Optional[Status] = None) -> None:
+                         reply_markup: Optional[InlineKeyboardMarkup] = None, status: Optional[Status] = None, responsible: Optional[UserModel] = None) -> None:
         self.messages.append(await self.bot.send_message(
             chat_id,
             await FORWARD_MESSAGE.render_async(
                 title=chat_title,
                 username=username,
                 html_text=html_text,
-                status=status
+                status=status,
+                responsible=responsible
             ),
             thread_id,
             reply_markup=reply_markup,
@@ -156,8 +164,8 @@ class MessageService:
     async def _copy_message(self, chat_id: int, chat_title: str, username: str, from_chat_id: int, message_id: int,
                             reply_to_message_id: Optional[int] = None, thread_id: Optional[int] = None,
                             reply_markup: Optional[InlineKeyboardMarkup] = None,
-                            status: Optional[Status] = None) -> None:
-        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id, thread_id, reply_markup, status)
+                            status: Optional[Status] = None, responsible: Optional[UserModel] = None) -> None:
+        await self._send_text(chat_id, chat_title, username, None, reply_to_message_id, thread_id, reply_markup, status, responsible)
         await sleep(0.1)
         self.messages.append(await self.bot.copy_message(
             chat_id,
@@ -190,6 +198,7 @@ class MessageService:
             message_model = MessageModel(
                 chat_id=chat_id,
                 message_id=message_out.message_id,
+                message_thread_id=message_out.message_thread_id,
                 from_user_id=user_id,
                 forward_from_chat_id=from_chat_id,
                 forward_from_message_id=from_message_id
