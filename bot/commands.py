@@ -10,6 +10,7 @@ async def set_commands(bot: Bot) -> None:
                 BotCommand(command="groups", description="Учасники груп"),
                 BotCommand(command="users", description="Учасники чату"),
                 BotCommand(command="send", description="Надіслати повідомлення"),
+                BotCommand(command="responsible", description="Встановити відповідального")
             ),
             BotCommandScopeAllGroupChats(),
         )
