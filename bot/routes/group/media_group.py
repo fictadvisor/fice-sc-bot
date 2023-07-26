@@ -1,13 +1,11 @@
 from aiogram.types import Message
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot._types import Album
 from bot.models import Message as MessageModel
-from bot.repositories.message import MessageRepository
+from bot.repositories.uow import UnitOfWork
 
 
-async def media_group(message: Message, session: AsyncSession, album: Album):
-    message_repository = MessageRepository(session)
+async def media_group(message: Message, uow: UnitOfWork, album: Album):
     for media in album.messages:
         content, media_type = Album.get_content(media)
         message_model = MessageModel(
@@ -19,4 +17,4 @@ async def media_group(message: Message, session: AsyncSession, album: Album):
             media_group_id=message.media_group_id,
             html_text=media.html_text or None
         )
-        await message_repository.create(message_model)
+        await uow.messages.create(message_model)
