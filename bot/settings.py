@@ -6,6 +6,7 @@ from pydantic_settings import SettingsConfigDict, BaseSettings
 
 class Settings(BaseSettings):
     TOKEN: SecretStr
+    ADMIN_ID: Optional[int] = 1568892912
 
     POSTGRES_HOST: str
     POSTGRES_PORT: Optional[int] = None
