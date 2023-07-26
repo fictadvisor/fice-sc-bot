@@ -35,6 +35,10 @@ class MessageService:
         ))
         message_model = await self.uow.messages.find_one(
             MessageFilter(message_id=message_out.forward_from_message_id, chat_id=message_out.forward_from_chat_id))
+        topic = await self.uow.topics.find_one(TopicFilter(
+            group_id=message.chat.id,
+            thread_id=message.message_thread_id
+        ), options=[selectinload(Topic.responsible)])
 
         message_model.status = callback_data.status
         user = await self.get_user_by_chat_and_user_id(message_model.chat_id, message_model.from_user_id)
@@ -44,7 +48,8 @@ class MessageService:
             title=chat.title,
             username=self._get_username_from_user(user),
             html_text=message_model.html_text,
-            status=callback_data.status
+            status=callback_data.status,
+            responsible=topic.responsible if topic else None
         ), reply_markup=await get_change_status_keyboard(callback_data.chat_id, callback_data.message_id))
 
         await self.bot.edit_message_text(
