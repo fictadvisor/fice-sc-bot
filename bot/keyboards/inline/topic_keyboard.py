@@ -12,6 +12,7 @@ async def get_topic_keyboard(chat_id: int, topics: List[Topic]) -> InlineKeyboar
 
     for topic in topics:
         builder.button(text=topic.title, callback_data=SelectTopic(chat_id=chat_id, thread_id=topic.thread_id))
+    builder.button(text="Інше", callback_data=SelectTopic(chat_id=chat_id))
 
     if len(topics) <= 8:
         builder.adjust(1)

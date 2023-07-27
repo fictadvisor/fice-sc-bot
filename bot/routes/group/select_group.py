@@ -21,7 +21,9 @@ async def select_group(callback: CallbackQuery, callback_data: SelectGroup, bot:
             await SENT.render_async(title=message_service.get_chat_title(), status=message_service.get_status()))
         return
 
-    topics = await uow.topics.find(TopicFilter(group_id=callback_data.chat_id))
+    topics = await uow.topics.get_all_by_filter_with_responsible(TopicFilter(
+        group_id=callback_data.chat_id
+    ))
     await callback.message.edit_text(
         SELECT_TOPIC,
         reply_markup=await get_topic_keyboard(callback_data.chat_id, topics)

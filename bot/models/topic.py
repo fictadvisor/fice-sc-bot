@@ -14,6 +14,6 @@ class Topic(Base):
 
     group_id: Mapped[BigInteger] = mapped_column(ForeignKey("groups.id", ondelete="CASCADE"))
     thread_id: Mapped[int] = mapped_column(BigInteger)
-    responsible_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    responsible_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
     responsible: Mapped[Optional["User"]] = relationship()
     title: Mapped[str]
