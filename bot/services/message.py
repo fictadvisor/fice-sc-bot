@@ -203,7 +203,6 @@ class MessageService:
             message_model = MessageModel(
                 chat_id=chat_id,
                 message_id=message_out.message_id,
-                message_thread_id=message_out.message_thread_id,
                 from_user_id=user_id,
                 forward_from_chat_id=from_chat_id,
                 forward_from_message_id=from_message_id

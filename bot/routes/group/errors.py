@@ -1,3 +1,4 @@
+import logging
 import traceback
 from asyncio import sleep
 
@@ -14,3 +15,4 @@ async def errors(event: ErrorEvent, bot: Bot):
         for sub in [tb[i:i + 4096] for i in range(0, len(tb), 4096)]:
             await bot.send_message(settings.ADMIN_ID, sub, parse_mode=None)
             await sleep(0.1)
+    logging.error(event.exception)
