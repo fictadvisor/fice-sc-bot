@@ -90,7 +90,7 @@ class MessageService:
             media_group = self._get_media_group_from_message_models(messages)
             await self._send_media_group(chat_id, title, username, media_group, None, thread_id, reply_markup,
                                          message_in.status, responsible)
-        elif message_in.html_text:
+        elif message_in.html_text and not message.caption:
             await self._send_text(chat_id, title, username, message_in.html_text, None, thread_id, reply_markup,
                                   message_in.status, responsible)
         else:
@@ -107,7 +107,7 @@ class MessageService:
         if message.media_group_id:
             await self._send_media_group(main_message.chat_id, message.chat.title,
                                          username, album.as_media_group, main_message.message_id)
-        elif message.text:
+        elif message.html_text and not message.caption:
             await self._send_text(main_message.chat_id, message.chat.title, username, message.html_text,
                                   main_message.message_id)
         else:
@@ -127,7 +127,7 @@ class MessageService:
         if message.media_group_id:
             await self._send_media_group(message_in.forward_from_chat_id, message.chat.title, username,
                                          album.as_media_group, message_in.forward_from_message_id)
-        elif message.html_text:
+        elif message.html_text and not message.caption:
             await self._send_text(message_in.forward_from_chat_id, message.chat.title, username, message.html_text,
                                   message_in.forward_from_message_id)
         else:
