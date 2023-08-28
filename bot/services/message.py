@@ -83,7 +83,7 @@ class MessageService:
 
         if message_in.media_group_id:
             messages = await self.uow.messages.find(MessageFilter(
-                chat_id=chat_id,
+                chat_id=from_chat_id,
                 media_group_id=message_in.media_group_id
             ))
 
