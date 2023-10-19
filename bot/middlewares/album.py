@@ -12,8 +12,8 @@ from bot._types import Album
 
 
 class AlbumMiddleware(BaseMiddleware):
-    DEFAULT_LATENCY = 0.2
-    DEFAULT_TTL = 0.6
+    DEFAULT_LATENCY = 0.3
+    DEFAULT_TTL = 1
 
     def __init__(
             self,

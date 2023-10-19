@@ -27,11 +27,12 @@ async def main() -> None:
             port=settings.POSTGRES_PORT,
             database=settings.POSTGRES_DB,
         ),
-        pool_recycle=1800
+        pool_recycle=900
     )
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False, autoflush=False)
 
     bot = Bot(token=settings.TOKEN.get_secret_value(), parse_mode=ParseMode.HTML)
+    await bot.delete_webhook()
     dp = Dispatcher()
 
     await set_commands(bot)

@@ -8,6 +8,7 @@ from aiogram.filters import (
 
 from .all_members import all_members
 from .answer_message import answer_message
+from .clear import clear
 from .errors import errors
 from .group_members import group_members
 from .groups_members import groups_members
@@ -56,6 +57,7 @@ router.message.register(group_members, Command("users"))
 router.message.register(send, Command("send"), F.reply_to_message)
 router.message.register(responsible, Command("responsible", magic=F.args), F.chat.is_forum)
 router.message.register(help_command, Command("help"))
+router.message.register(clear, Command("clear"))
 
 router.callback_query.register(select_type, SelectType.filter())
 router.callback_query.register(select_group, SelectGroup.filter())

@@ -7,6 +7,13 @@ ALL_MEMBERS = environment.from_string("""
 {% endfor %}</code>
 """)
 
+DELETED_MEMBERS = environment.from_string("""
+Видалені учасники:
+<code>{% for user in users %}
+{{ user.username }}
+{% endfor %}</code>
+""")
+
 GROUPS_MEMBERS = environment.from_string("""
 {% for group in groups %}
 <b>{{ group.title }}</b>
