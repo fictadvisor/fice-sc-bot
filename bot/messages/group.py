@@ -1,7 +1,7 @@
 from bot.messages.environment import environment
 
 ALL_MEMBERS = environment.from_string("""
-Всі учасники:
+Всі учасники  - {{ users|length }}:
 <code>{% for user in users %}
 {{ user.username }}
 {% endfor %}</code>
@@ -16,7 +16,7 @@ DELETED_MEMBERS = environment.from_string("""
 
 GROUPS_MEMBERS = environment.from_string("""
 {% for group in groups %}
-<b>{{ group.title }}</b>
+<b>{{ group.title }} - {{ group.users|length }}</b>
 <code>{% for user in group.users %}
 {{ user.username }}
 {% endfor %}</code>
@@ -24,7 +24,7 @@ GROUPS_MEMBERS = environment.from_string("""
 """)
 
 GROUP_MEMBERS = environment.from_string("""
-Учасники чату:
+Учасники чату - {{ group.users|length }}:
 <code>{% for user in group.users %}
 {{ user.username }}
 {% endfor %}</code>
