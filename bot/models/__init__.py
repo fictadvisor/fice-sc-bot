@@ -4,6 +4,8 @@ from .message import Message
 from .topic import Topic
 from .user import User
 from .usergrouplink import UserGroupLink
+from .random_coffee import RandomCoffee
+from .random_coffee_pair import RandomCoffeePair
 
 __all__ = [
     "Base",
@@ -11,5 +13,7 @@ __all__ = [
     "Group",
     "UserGroupLink",
     "Message",
-    "Topic"
+    "Topic",
+    "RandomCoffee",
+    "RandomCoffeePair"
 ]

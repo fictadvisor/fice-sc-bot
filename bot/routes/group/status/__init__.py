@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router
 
 from bot.keyboards.inline.types.change_status import ChangeStatus
 from bot.keyboards.inline.types.select_status import SelectStatus

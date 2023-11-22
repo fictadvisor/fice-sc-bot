@@ -76,3 +76,10 @@ HELP = """
 /delete @{username} - Видалити юзера
 /help - Допомога
 """
+
+RANDOM_COFFEE = environment.from_string("""
+Пари на Random Coffee:
+{% for pair in pairs %}
+{{ pair.first.username }} - {{ pair.second.username }}
+{% endfor %}
+""")

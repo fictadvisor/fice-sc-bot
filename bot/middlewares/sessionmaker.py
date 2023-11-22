@@ -17,8 +17,7 @@ class SessionMaker(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any]
     ) -> Any:
-        async with self._async_sessionmaker() as session:
-            async with session.begin():
-                async with UnitOfWork(session) as uow:
-                    data["uow"] = uow
-                    return await handler(event, data)
+        async with self._async_sessionmaker() as session, session.begin():
+            async with UnitOfWork(session) as uow:
+                data["uow"] = uow
+                return await handler(event, data)

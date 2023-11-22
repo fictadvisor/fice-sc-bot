@@ -17,6 +17,9 @@ aiogram = {version = "^3.0.0b8", allow-prereleases = true}
 pydantic-settings = "^2.0.2"
 
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.6"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -18,7 +18,6 @@ from .invite_member import invite_member
 from .kick_bot import kick_bot
 from .kick_member import kick_member
 from .media_group import media_group
-from bot.routes.group.all.messages import messages
 from .rename_group import rename_group
 from .reply_message import reply_message
 from .responsible import responsible
@@ -31,6 +30,7 @@ from .topics import router as topics_router
 from .status import router as status_router
 from .admin import router as admin_router
 from .all import router as all_router
+from .random_coffee import router as random_coffee_router
 from ...filters.is_sent import IsSent
 from ...keyboards.inline.types.select_group import SelectGroup
 from ...keyboards.inline.types.select_topic import SelectTopic
@@ -38,6 +38,7 @@ from ...keyboards.inline.types.select_type import SelectType
 
 router = Router()
 
+router.include_router(random_coffee_router)
 router.include_router(admin_router)
 router.include_router(topics_router)
 router.include_router(status_router)
