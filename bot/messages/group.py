@@ -83,3 +83,8 @@ RANDOM_COFFEE = environment.from_string("""
 {{ pair.first.username }} - {{ pair.second.username }}
 {% endfor %}
 """)
+
+MY_COFFEE = environment.from_string("""
+Твоя пара:
+{{ pair.first.username }} - {{ pair.second.username }}
+""")
