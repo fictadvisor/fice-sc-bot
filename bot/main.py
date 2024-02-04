@@ -27,7 +27,8 @@ async def main() -> None:
             port=settings.POSTGRES_PORT,
             database=settings.POSTGRES_DB,
         ),
-        pool_recycle=900
+        pool_recycle=600,
+        pool_pre_ping=True
     )
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False, autoflush=False)
 
